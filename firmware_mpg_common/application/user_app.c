@@ -88,7 +88,14 @@ Promises:
 */
 void UserAppInitialize(void)
 {
-  
+  LedOff(WHITE);
+  LedOff(PURPLE);
+  LedOff(BLUE);
+  LedOff(CYAN);
+  LedOff(GREEN);
+  LedOff(YELLOW);
+  LedOff(ORANGE);
+  LedOff(RED);
   /* If good initialization, set state to Idle */
   if( 1 )
   {
@@ -137,6 +144,87 @@ State Machine Function Definitions
 /* Wait for a message to be queued */
 static void UserAppSM_Idle(void)
 {
+  //static u8 u8counter = 0;
+  static u16 u16counter = 0;
+  
+  if(u16counter == 500)
+  { 
+    LedOn(WHITE);
+     LedOn(PURPLE);
+     LedOn(BLUE);
+     LedOn(CYAN);
+     LedOn(GREEN);
+     LedOn(YELLOW);
+     LedOn(ORANGE);
+     LedOn(RED);
+  }
+  if(u16counter == 1000)  
+  {
+     
+     LedOff(WHITE);
+     LedOn(PURPLE);
+     LedOn(BLUE);
+     LedOn(CYAN);
+     LedOn(GREEN);
+     LedOn(YELLOW);
+     LedOn(ORANGE);
+     LedOff(RED);
+  }
+    
+  
+  if(u16counter == 1500 )
+  {
+     LedOff(WHITE);
+     LedOff(PURPLE);
+     LedOn(BLUE);
+     LedOn(CYAN);
+     LedOn(GREEN);
+     LedOn(YELLOW);
+     LedOff(ORANGE);
+     LedOff(RED);
+     
+  }
+     
+  
+  if(u16counter == 2000 )
+  {
+     LedOff(WHITE);
+     LedOff(PURPLE);
+     LedOff(BLUE);
+     LedOn(CYAN);
+     LedOn(GREEN);
+     LedOff(YELLOW);
+     LedOff(ORANGE);
+     LedOff(RED);
+     
+   
+  }
+     
+  if(u16counter == 2500 )
+  {
+     LedOff(WHITE);
+     LedOff(PURPLE);
+     LedOff(BLUE);
+     LedOff(CYAN);
+     LedOff(GREEN);
+     LedOff(YELLOW);
+     LedOff(ORANGE);
+     LedOff(RED);
+     
+  }
+  
+  if(u16counter == 2501)
+  {
+    u16counter = 0;
+  
+  }
+  
+  u16counter++;
+     
+     
+  
+ 
+  
     
 } /* end UserAppSM_Idle() */
      
