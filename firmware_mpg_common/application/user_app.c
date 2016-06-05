@@ -93,14 +93,16 @@ Promises:
 void UserAppInitialize(void)
 {
   /*always show my name in line1*/
-  u8 au8Message[] = "A3.BaoZihang";
+  u8 au8Message[] = "A3.JohnBao";
   LCDMessage(LINE1_START_ADDR, au8Message);
-  LCDClearChars(LINE1_START_ADDR + 13, 6);
+  LCDClearChars(LINE1_START_ADDR + 12, 6);  //clear LCD_BUFFER
   
   /*show my favorite lcd color*/
   LedOn(LCD_BLUE);
   LedOff(LCD_RED);
   LedOff(LCD_GREEN);
+  
+  
   /*clear userinputbuffer*/
   for(u8 i = 0; i < USER_INPUT_BUFFER_SIZE; i++)
   {
@@ -180,6 +182,8 @@ static void UserAppSM_Idle(void)
   static u8 u8characterPosition = LINE2_START_ADDR;  //Set the character beginning position
   //static u8 u8TermInputBuffer[8] = {0};
   static u8 u8CorrectInputBuffer[8] = {0};           
+  static u8 u8CorrectInputIndex = 0;
+  
   static u32 u32TOTALNUM = 0;                        //count the total number of characters  
   u8 u8CharCount;
    
@@ -219,6 +223,25 @@ static void UserAppSM_Idle(void)
   }
   
   
+   /*BUTTON3 prints the current letter buffer that is storing my name*/
+  if(WasButtonPressed(BUTTON3))
+  {
+    ButtonAcknowledge(BUTTON3);
+    DebugLineFeed();
+    DebugPrintf(u8BufferMessage);
+    
+    /* Make sure there's at least one character in there! */
+    if(u8CorrectInputIndex == 0)
+    {
+      DebugPrintf(u8EmptyMessage);
+    }
+    else
+    {
+      DebugPrintf(u8CorrectInputBuffer);
+    }
+    
+    DebugLineFeed();
+  }
   
   
   
@@ -228,11 +251,13 @@ static void UserAppSM_Idle(void)
   
   
   
+  
+  /*JUST FOR TEST
   if(WasButtonPressed(BUTTON1))
   {
     ButtonAcknowledge(BUTTON1);
     
-    /* Read the buffer and print the contents */
+   
     u8CharCount = DebugScanf(au8UserInputBuffer);
     au8UserInputBuffer[u8CharCount] = '\0';
     DebugPrintf(u8BufferMessage);
@@ -247,8 +272,12 @@ static void UserAppSM_Idle(void)
       DebugPrintf(u8EmptyMessage);
     }
   
+  */
+  
    
   
+ /*******************************************************************************/ 
+  /*The core loop function of the debug input characters*/
   
   if(u8samplingTime == 20)
   {
@@ -257,10 +286,10 @@ static void UserAppSM_Idle(void)
     /*check tera serial debug input every 20 ms*/
     if(DebugScanf(au8UserInputBuffer))
     {
-      /*Keep track of the total number of characters that have been received*/
+      /*Keep track of the TOTALNUM of characters that have been received*/
       u32TOTALNUM++;
       
-      /*when the cursor returns to the beginning,clear the whole line*/
+      /*when the position back to the beginning,clear the whole line2*/
       if(u8characterPosition == LINE2_START_ADDR)
       {
         LCDClearChars(LINE2_START_ADDR, 20);   
