@@ -93,13 +93,14 @@ Promises:
 void UserAppInitialize(void)
 {
   /*always show my name in line1*/
-  u8 au8Message[] = "A3.Bao Zihang";
+  u8 au8Message[] = "A3.BaoZihang";
   LCDMessage(LINE1_START_ADDR, au8Message);
   LCDClearChars(LINE1_START_ADDR + 13, 6);
   
   /*show my favorite lcd color*/
   LedOn(LCD_BLUE);
-  
+  LedOff(LCD_RED);
+  LedOff(LCD_GREEN);
   /*clear userinputbuffer*/
   for(u8 i = 0; i < USER_INPUT_BUFFER_SIZE; i++)
   {
@@ -164,9 +165,19 @@ State Machine Function Definitions
 /* Wait for a message to be queued */
 static void UserAppSM_Idle(void)
 {
+  // Messages Definition
   static u8 u8NumCharsMessage[] = "\n\rTotal characters received: ";
   static u8 u8BufferMessage[]   = "\n\rBuffer contents:\n\r";
-  static u8 u8EmptyMessage[] = "\n\rEmpty!\n\r";
+  static u8 u8EmptyMessage[] = "\n\rEmpty Buffer!\n\r";
+  static u8 u8CCCMessage[] = "Character count cleared!"; 
+  
+  //Variable Definition
+  
+  static u8 u8samplingTime = 0;  //Take input sample interval time 20ms
+  static u8 u8characterPosition = LINE2_START_ADDR;  //Set the character beginning position
+  //static u8 u8TermInputBuffer[8] = {0};
+  static u8 u8CorrectInputBuffer[8] = {0};
+  static u32 u32TOTALNUM = 0;
   u8 u8CharCount;
    
   if(WasButtonPressed(BUTTON1))
@@ -188,7 +199,44 @@ static void UserAppSM_Idle(void)
       DebugPrintf(u8EmptyMessage);
     }
   
+   
   
+  
+  if(u8samplingTime == 20)
+  {
+    u8samplingTime = 0;
+    
+    /*check tera serial debug input every 20 ms*/
+    if(DebugScanf(au8UserInputBuffer))
+    {
+      /*Keep track of the total number of characters that have been received*/
+      u32TOTALNUM++;
+      
+      /*when the cursor returns to the beginning,clear the whole line*/
+      if(u8characterPosition == LINE2_START_ADDR)
+      {
+        LCDClearChars(LINE2_START_ADDR, 20);   
+      }
+      
+      /*display the character inputed on the lcd*/
+      LCDMessage(u8characterPosition,au8UserInputBuffer);
+      
+      
+      /*When the line2_screen is full, do clear Line 2*/
+
+      if(u8characterPosition >= LINE2_END_ADDR)
+      {
+        u8characterPosition = LINE2_START_ADDR;     
+      }
+      else
+      {
+        u8characterPosition++;
+      }
+      
+      
+    }   
+  }
+   
   
   
   
