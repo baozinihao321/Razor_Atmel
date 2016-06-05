@@ -173,13 +173,35 @@ static void UserAppSM_Idle(void)
   
   //Variable Definition
   
-  static u8 u8samplingTime = 0;  //Take input sample interval time 20ms
+  static u8 u8samplingTime = 0;                      //Take input sample interval time 20ms
   static u8 u8characterPosition = LINE2_START_ADDR;  //Set the character beginning position
   //static u8 u8TermInputBuffer[8] = {0};
-  static u8 u8CorrectInputBuffer[8] = {0};
-  static u32 u32TOTALNUM = 0;
+  static u8 u8CorrectInputBuffer[8] = {0};           
+  static u32 u32TOTALNUM = 0;                        //count the total number of characters  
   u8 u8CharCount;
    
+  
+  /*BUTTON0 clear the LCD_line2 and also restart the character position*/
+  if(WasButtonPressed(BUTTON0))
+  {
+    ButtonAcknowledge(BUTTON0);              //reset the mark
+    
+    LCDClearChars(LINE2_START_ADDR, 20);      //clear the whole line2
+    u8characterPosition = LINE2_START_ADDR;    //restart the position
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   if(WasButtonPressed(BUTTON1))
   {
     ButtonAcknowledge(BUTTON1);
