@@ -208,6 +208,16 @@ static void UserAppSM_Idle(void)
     DebugLineFeed();                       //change line
   }
   
+  /*BUTTON2 clears the TOTALNUM count and prints a message on the serial port*/
+  if(WasButtonPressed(BUTTON2))
+  {
+    ButtonAcknowledge(BUTTON2);           //reset the mark
+    u32TOTALNUM = 0;                      //reset the TOTALNUM count
+    DebugLineFeed();                      //change line
+    DebugPrintf(u8CCCMessage);            //print character counter cleared
+    DebugLineFeed();                      //change line
+  }
+  
   
   
   
