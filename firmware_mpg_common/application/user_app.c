@@ -165,12 +165,15 @@ State Machine Function Definitions
 /* Wait for a message to be queued */
 static void UserAppSM_Idle(void)
 {
+  /*******************************************************************************/
   // Messages Definition
   static u8 u8NumCharsMessage[] = "\n\rTotal characters received: ";
   static u8 u8BufferMessage[]   = "\n\rBuffer contents:\n\r";
   static u8 u8EmptyMessage[] = "\n\rEmpty Buffer!\n\r";
   static u8 u8CCCMessage[] = "Character count cleared!"; 
   
+  
+  /*************************************************************************************/
   //Variable Definition
   
   static u8 u8samplingTime = 0;                      //Take input sample interval time 20ms
@@ -180,6 +183,10 @@ static void UserAppSM_Idle(void)
   static u32 u32TOTALNUM = 0;                        //count the total number of characters  
   u8 u8CharCount;
    
+  
+  /*********************************************************************************/
+  /*BUTTON FUNCTION*/
+  
   
   /*BUTTON0 clear the LCD_line2 and also restart the character position*/
   if(WasButtonPressed(BUTTON0))
@@ -191,6 +198,15 @@ static void UserAppSM_Idle(void)
   }
   
   
+  /*BUTTON1 prints back the total number of characters received on the serial port */
+  if(WasButtonPressed(BUTTON1))
+  {
+    ButtonAcknowledge(BUTTON1);            //reset the mark
+    DebugLineFeed();                       //change line
+    DebugPrintf(u8NumCharsMessage);        //print strings
+    DebugPrintNumber(u32TOTALNUM);         //print number
+    DebugLineFeed();                       //change line
+  }
   
   
   
