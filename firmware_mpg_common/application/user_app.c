@@ -42,7 +42,7 @@ All Global variable names shall start with "G_"
 ***********************************************************************************************************************/
 /* New variables */
 volatile u32 G_u32UserAppFlags;                       /* Global state flags */
-
+volatile bool G_bUserAppCharacterCorrectFlag = FALSE; /*Character Correct Flag*/
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 /* Existing variables (defined in other files -- should all contain the "extern" keyword) */
@@ -93,8 +93,8 @@ Promises:
 void UserAppInitialize(void)
 {
   /*always show my name in line1*/
-  u8 au8Message[] = "A3.JohnBao";
-  LCDMessage(LINE1_START_ADDR, au8Message);
+  u8 au8NAME[] = "A3.JohnBao";
+  LCDMessage(LINE1_START_ADDR, au8NAME);
   LCDClearChars(LINE1_START_ADDR + 12, 6);  //clear LCD_BUFFER
   
   /*show my favorite lcd color*/
@@ -185,6 +185,7 @@ static void UserAppSM_Idle(void)
   static u8 u8CorrectInputIndex = 0;
   
   static u32 u32TOTALNUM = 0;                        //count the total number of characters  
+  u8 u8NAME[] = "John";
   u8 u8CharCount;
    
   
@@ -251,7 +252,6 @@ static void UserAppSM_Idle(void)
   
   
   
-  
   /*JUST FOR TEST
   if(WasButtonPressed(BUTTON1))
   {
@@ -276,7 +276,11 @@ static void UserAppSM_Idle(void)
   
    
   
- /*******************************************************************************/ 
+ 
+  
+  
+  
+  /*******************************************************************************/ 
   /*The core loop function of the debug input characters*/
   
   if(u8samplingTime == 20)
@@ -308,6 +312,26 @@ static void UserAppSM_Idle(void)
       else
       {
         u8characterPosition++;
+      }
+      
+      /*Compare the buffer and the name regardless of the caps look*/
+      if(au8UserInputBuffer[0] == u8NAME[u8CorrectInputIndex] || au8UserInputBuffer[0] == u8NAME[u8CorrectInputIndex] - 32 ||au8UserInputBuffer[0] == u8NAME[u8CorrectInputIndex] + 32)
+      {
+        u8CorrectInputBuffer[u8CorrectInputIndex] = au8UserInputBuffer[0];
+        if(u8CorrectInputIndex == 5)
+        {
+          /*If all characters are correct clear the buffer and set the flag*/
+          u8CorrectInputIndex = 0;
+          for(u8 i = 0;i < 8;i++)
+          {
+            u8CorrectInputBuffer[i] = 0;
+          }
+          G_bUserAppCharacterCorrectFlag = TRUE;
+        }
+        else
+        {
+          u8CorrectInputIndex++;
+        }
       }
       
       
